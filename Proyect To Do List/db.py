@@ -20,14 +20,25 @@ c.execute("""
 conn.commit()
 
 # Interface 
+
+# Currying! retrasar la aplicación de una función
+def completed(id):
+    def _completed():
+        print(id)
+    return _completed
+        
+
 def renderTodos():
     rows = c.execute("SELECT * FROM todo").fetchall()
     print(rows)
 
     for i in range(0, len(rows)):
+        id = rows[i][0]
         isCompleted = rows[i][3]
         description = rows[i][2]
-        checkBtn = Checkbutton(frame, text=description, width=42, anchor="w")
+        checkBtn = Checkbutton(frame, text=description, width=42, anchor="w", 
+        # Currying aplicado 
+            command=completed(id))
         checkBtn.grid(row=i, column=0, sticky="w")
 
 def addTodo():
