@@ -3,6 +3,8 @@ from tkinter import messagebox
 from tkinter import ttk
 import sqlite3
 
+from numpy import delete
+
 root = Tk()
 root.title("Client Management")
 
@@ -25,6 +27,10 @@ conn.commit()
 
 def render_Clients():
     rows = c.execute("SELECT * FROM crm").fetchall()
+
+    # Fix "Error: Item 1 already exists"
+    tree.delete(*tree.get_children())
+
     for row in rows:
         # (padre, dondeAgregarElRegistro, cualSeraElIDdelRegistro)
         tree.insert("", END, row[0], values=(row[2], row[3], row[4]))
@@ -37,7 +43,7 @@ def insert(client):
     conn.commit()
     render_Clients()
 
-def new_Client():
+def new_Client(): 
     top = Toplevel()
     top.title("Nuevo cliente")
 
@@ -82,11 +88,15 @@ def new_Client():
     top.mainloop()
 
 def delete_Client():
-    answer = messagebox.askokcancel("Eliminar cliente", "¿Estás seguro de querer eliminar a este cliente?")
-    if answer:
-        messagebox.showinfo("Cliente eliminado", "El cliente ha sido elimiando correctamente")
-    else:
-        pass
+    # answer = messagebox.askokcancel("Eliminar cliente", "¿Estás seguro de querer eliminar a este cliente?")
+    # if answer:
+    #     messagebox.showinfo("Cliente eliminado", "El cliente ha sido elimiando correctamente")
+    # else:
+    #     pass
+
+    # método para saber cuál(es) es el elemento que está seleccionado
+    selections = tree.selection()
+    print(selections)
 
 btnNewClient = Button(root, text="Nuevo Client", command=new_Client)
 btnNewClient.grid(column=0, row=0)
