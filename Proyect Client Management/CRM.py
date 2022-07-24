@@ -4,8 +4,6 @@ from tkinter import messagebox
 from tkinter import ttk
 import sqlite3
 
-from pynvim import command
-
 root = Tk()
 root.title("Client Management")
 
@@ -25,12 +23,33 @@ c.execute("""
 conn.commit()
 
 # Interface
+
+def insert(client):
+    print(client)
+
 def new_Client():
     top = Toplevel()
     top.title("Nuevo cliente")
 
     def save():
-        pass
+        if not inputName.get():
+            messagebox.showerror("Error", "Ingresa un nombre para el cliente.")
+            return 
+            # con "return" esto corto la ejecución de lo q viene después de mostrar el mensaje
+            # o sea cierra la ventana top, con esto hacemos que no cierre la ventana
+
+        if not inputTel.get():
+            messagebox.showerror("Error", "Ingresa un teléfono para el cliente.")
+            return 
+
+
+        client = {
+            'name': inputName.get(),
+            "telephone": inputTel.get(),
+            "brand": inputBrand.get()
+        }
+        insert(client)
+        top.destroy()
 
     lblName = Label(top, text="Nombre")
     lblName.grid(row=0, column=0)
