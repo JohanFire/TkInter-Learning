@@ -1,4 +1,3 @@
-from email import message
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
@@ -24,8 +23,19 @@ conn.commit()
 
 # Interface
 
+def render_Clients():
+    rows = c.execute("SELECT * FROM crm").fetchall()
+    for row in rows:
+        # (padre, dondeAgregarElRegistro, cualSeraElIDdelRegistro)
+        tree.insert("", END, row[0], values=(row[2], row[3], row[4]))
+
 def insert(client):
     print(client)
+    c.execute("""
+                INSERT INTO crm (name, telephone, brand) VALUES (?, ?, ?)
+    """, (client["name"], client["telephone"], client["brand"]))
+    conn.commit()
+    render_Clients()
 
 def new_Client():
     top = Toplevel()
@@ -98,4 +108,5 @@ tree.grid(column=0, row=1, columnspan=2)
 
 tree.insert("", END, "lala", values=("Uno", "Dos", "Tres"), text="chanchito")
 
+render_Clients()
 root.mainloop()
