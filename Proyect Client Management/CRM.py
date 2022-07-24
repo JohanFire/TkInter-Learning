@@ -88,9 +88,11 @@ def new_Client():
     top.mainloop()
 
 def delete_Client():
-    answer = messagebox.askokcancel("Eliminar cliente", "¿Estás seguro de querer eliminar a este cliente?")
+    id = tree.selection()[0]
+
+    nombreClienteEliminar = c.execute("SELECT * FROM crm WHERE id = ?", (id, )).fetchone()
+    answer = messagebox.askokcancel("Eliminar cliente", "¿Estás seguro de querer eliminar al cliente {}?" .format(nombreClienteEliminar[2]))
     if answer:
-        id = tree.selection()[0]
         c.execute("DELETE FROM crm WHERE id = ?", (id, ))
         conn.commit()
         render_Clients()
