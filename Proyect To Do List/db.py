@@ -3,7 +3,7 @@ import sqlite3
 
 root = Tk()
 root.title("DATA BASE: To Do List")
-root.geometry("350x500")
+root.geometry("400x500")
 
 # DB Connection
 conn = sqlite3.connect("Proyect To Do List/todo.db")
@@ -21,25 +21,46 @@ conn.commit()
 
 # Interface 
 
+def remove(id):
+    def _remove():
+        c.execute("DELETE FROM todo WHERE id = ?", (id, ))
+        conn.commit()
+        renderTodos()
+    return _remove
+
 # Currying! retrasar la aplicación de una función
-def completed(id):
-    def _completed():
+def complete(id):
+    def _complete():
+        todo = c.execute("SELECT * from todo WHERE id = ?", (id, )).fetchone()
+        c.execute("UPDATE todo SET completed = ? WHERE id = ?", (not todo[3], id)) # todo[3]4ta columna, el estado final
+        conn.commit()
+        renderTodos()
         print(id)
-    return _completed
+    return _complete
         
 
 def renderTodos():
     rows = c.execute("SELECT * FROM todo").fetchall()
     print(rows)
 
+    # eliminar elementos dentro del frame
+    for widget in frame.winfo_children():
+        widget.destroy( )
+
     for i in range(0, len(rows)):
         id = rows[i][0]
-        isCompleted = rows[i][3]
+        completed = rows[i][3]
         description = rows[i][2]
-        checkBtn = Checkbutton(frame, text=description, width=42, anchor="w", 
+        color = "#C4C3A3" if completed else "#141411"
+        checkBtn = Checkbutton(frame, text=description, fg=color, width=42, anchor="w", 
         # Currying aplicado 
-            command=completed(id))
+        command=complete(id))
+        
         checkBtn.grid(row=i, column=0, sticky="w")
+        checkBtn.select() if completed else checkBtn.deselect()
+
+        btnEliminar = Button(frame, text="Eliminar", command=remove(id))
+        btnEliminar.grid(row=i, column=1)
 
 def addTodo():
     todo = inputTarea.get()
