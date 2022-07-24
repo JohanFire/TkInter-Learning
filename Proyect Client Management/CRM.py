@@ -88,15 +88,20 @@ def new_Client():
     top.mainloop()
 
 def delete_Client():
-    # answer = messagebox.askokcancel("Eliminar cliente", "¿Estás seguro de querer eliminar a este cliente?")
-    # if answer:
-    #     messagebox.showinfo("Cliente eliminado", "El cliente ha sido elimiando correctamente")
-    # else:
-    #     pass
+    answer = messagebox.askokcancel("Eliminar cliente", "¿Estás seguro de querer eliminar a este cliente?")
+    if answer:
+        id = tree.selection()[0]
+        c.execute("DELETE FROM crm WHERE id = ?", (id, ))
+        conn.commit()
+        render_Clients()
+        messagebox.showinfo("Cliente eliminado", "El cliente ha sido elimiando correctamente")
+    else:
+        pass
 
-    # método para saber cuál(es) es el elemento que está seleccionado
-    selections = tree.selection()
-    print(selections)
+    # # método para saber cuál(es) es el elemento que está seleccionado
+    # selections = tree.selection()
+    # print(selections)
+
 
 btnNewClient = Button(root, text="Nuevo Client", command=new_Client)
 btnNewClient.grid(column=0, row=0)
